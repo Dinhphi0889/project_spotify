@@ -1,38 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Put, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Put, HttpCode, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from './dto/create-user.dto';
 
-@ApiTags('USER')
-@Controller('user')
+@Controller('/api/user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   // find all user
+  @ApiTags('USER')
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
-  // Create new user
-  @Post()
-  @HttpCode(HttpStatus.OK)
-  async create(@Body() createUserDto: CreateUserDto) {
-    try {
-      const user = await this.userService.create(createUserDto);
-      return user
-    } catch (error) {
-      throw new HttpException({
-        status: HttpStatus.BAD_REQUEST,
-        error:'Request Failed'
-      }, HttpStatus.BAD_REQUEST)
-    }
+  // find user by id
+  @ApiTags('USER')
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(+id);
   }
 
   // Upload img
+  @ApiTags('USER')
   @UseInterceptors(FileInterceptor("image", {
     storage: diskStorage({
       destination: process.cwd() + "/public/imgs",
@@ -46,23 +39,37 @@ export class UserController {
     return file
   }
 
-  // find user by id
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
   // Edit user
+  @ApiTags('USER')
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   // Delete user
-
+  @ApiTags('USER')
   @Delete(':id')
   remove(@Param('id') id: string) {
-
     return this.userService.remove(+id);
   }
+
+  @ApiTags('Auth')
+  @Post('/register')
+  async register(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto)
+  }
+
+  @ApiTags('Auth')
+  @Post('/login')
+  async login(@Body() { account, password }: { account: string; password: string }): Promise<any> {
+    const user = await this.userService.loginUser(account, password)
+    if (user) {
+      return user
+    } else {
+      return {
+        message: 'Account or password is incorrect'
+      }
+    }
+  }
+
 }

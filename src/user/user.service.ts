@@ -1,9 +1,9 @@
-import { Get, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Get, HttpStatus, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
-
+import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt'
 @Injectable()
 export class UserService {
   constructor(private config: ConfigService) { }
@@ -14,30 +14,12 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  // create new user
-  async create(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({
-      data: {
-        account: createUserDto.account,
-        name: createUserDto.name,
-        chanalName: createUserDto.chanalName,
-        pathImage: createUserDto.pathImage,
-        desciption: createUserDto.desciption,
-        refreshToken: createUserDto.refreshToken,
-        banner: createUserDto.banner,
-        role: createUserDto.role,
-        password: createUserDto.password,
-        nationality: createUserDto.nationality,
-      }
-    });
-  }
-
   // find user by id
   async findOne(id: number) {
     return this.prisma.user.findUnique({ where: { userId: id } });
   }
 
-  // update user
+  // Edit user
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.prisma.user.update({
       where: { userId: id },
@@ -56,7 +38,54 @@ export class UserService {
     })
   }
 
+  // Delete user
   remove(id: number) {
     return this.prisma.user.delete({ where: { userId: id } });
+  }
+
+  // check account user has used?
+  async checkDuplicateAccount(account: string): Promise<Boolean> {
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        account,
+      }
+    })
+    return !!existingUser
+  }
+
+  // register user
+  async create(createUserDto: CreateUserDto) {
+    const isAccount = await this.checkDuplicateAccount(createUserDto.account)
+    if (isAccount) {
+      throw HttpStatus.BAD_REQUEST
+    } else {
+      const salt = await bcrypt.genSalt()
+      const passwordHash = await bcrypt.hash(createUserDto.password, salt)
+      return this.prisma.user.create({
+        data: {
+          account: createUserDto.account,
+          name: createUserDto.name,
+          chanalName: createUserDto.chanalName,
+          pathImage: createUserDto.pathImage,
+          desciption: createUserDto.desciption,
+          refreshToken: createUserDto.refreshToken,
+          banner: createUserDto.banner,
+          role: createUserDto.role,
+          password: passwordHash,
+          nationality: createUserDto.nationality,
+        }
+      })
+    }
+  }
+
+  // login 
+  async loginUser(account: string, password: string): Promise<User | null> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        account,
+        password,
+      }
+    })
+    return user
   }
 }

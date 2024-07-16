@@ -42,12 +42,14 @@ model Genre {
 
 model LikedSong {
   id          Int      @id @default(autoincrement())
-  idUserLiked Int?
+  idSongLiked Int?
   idUser      Int?
   liked       Boolean?
   User        User?    @relation(fields: [idUser], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_1")
+  Song        Song?    @relation(fields: [idSongLiked], references: [songId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_2")
 
   @@index([idUser], map: "idUser")
+  @@index([idSongLiked], map: "idSongLiked")
 }
 
 model ListFriends {
@@ -64,14 +66,14 @@ model ListFriends {
 
 model Message {
   idMess      Int           @id @default(autoincrement())
-  idUser      Int?
+  idSender    Int?
   contentMess String?       @db.Text
-  type        String?       @db.VarChar(50)
-  Ngay        DateTime?     @db.DateTime(0)
+  timeSend    DateTime?     @db.DateTime(0)
+  roomChat    String?       @db.VarChar(100)
   ListFriends ListFriends[]
-  User        User?         @relation(fields: [idUser], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Message_ibfk_2")
+  User        User?         @relation(fields: [idSender], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Message_ibfk_2")
 
-  @@index([idUser], map: "idUser")
+  @@index([idSender], map: "idUser")
 }
 
 model Playlist {
@@ -121,28 +123,33 @@ model RecentPlayList {
 model RecentSong {
   id     Int       @id @default(autoincrement())
   userId Int?
+  songId Int?
   time   DateTime? @db.DateTime(0)
   User   User?     @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "RecentSong_ibfk_1")
+  Song   Song?     @relation(fields: [songId], references: [songId], onDelete: NoAction, onUpdate: NoAction, map: "RecentSong_ibfk_2")
 
   @@index([userId], map: "userId")
+  @@index([songId], map: "songId")
 }
 
 model Song {
-  songId         Int       @id @default(autoincrement())
+  songId         Int          @id @default(autoincrement())
   userId         Int?
   genreId        Int?
-  songName       String    @db.VarChar(255)
-  viewer         Int?      @default(0)
-  duration       Int?      @db.MediumInt
-  status         Boolean?
-  description    String?   @db.Text
-  songImage      String?   @db.VarChar(255)
-  publicDate     DateTime? @db.Date
-  filePath       String?   @db.VarChar(255)
+  songName       String       @db.VarChar(255)
+  viewer         Int?         @default(0)
+  duration       Int?         @db.MediumInt
+  popular        Boolean?
+  description    String?      @db.Text
+  songImage      String?      @db.VarChar(255)
+  publicDate     DateTime?    @db.Date
+  filePath       String?      @db.VarChar(255)
   discussQuality Int?
   Discuss        Discuss[]
-  User           User?     @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Song_ibfk_1")
-  Genre          Genre?    @relation(fields: [genreId], references: [genreId], onDelete: NoAction, onUpdate: NoAction, map: "Song_ibfk_2")
+  LikedSong      LikedSong[]
+  RecentSong     RecentSong[]
+  User           User?        @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Song_ibfk_1")
+  Genre          Genre?       @relation(fields: [genreId], references: [genreId], onDelete: NoAction, onUpdate: NoAction, map: "Song_ibfk_2")
 
   @@index([genreId], map: "genreId")
   @@index([userId], map: "userId")

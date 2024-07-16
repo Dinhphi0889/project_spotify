@@ -1,6 +1,38 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
+import { Prisma } from '@prisma/client';
+import { IsNumber, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
-    
+export class UpdateUserDto implements Prisma.UserCreateInput {
+    @IsNumber()
+    userId: Number;
+
+    @IsString()
+    account: string;
+
+    @IsString()
+    name: string;
+
+    @IsString()
+    nationality: string;
+
+    @IsString()
+    chanalName: string;
+
+    @IsString()
+    pathImage: string;
+
+    @IsString()
+    desciption: string;
+
+    @IsString()
+    refreshToken: string;
+
+    @IsString()
+    banner: string;
+
+    @IsString()
+    role: string;
+
+    @MinLength(6)
+    @MaxLength(20)
+    password: string;
 }
