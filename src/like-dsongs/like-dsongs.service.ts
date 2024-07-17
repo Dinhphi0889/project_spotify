@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { LikeDsongDto } from './dto/create-like-dsong.dto';
 import { UpdateLikeDsongDto } from './dto/update-like-dsong.dto';
-import { PrismaClient } from '@prisma/client';
+import { LikedSong, PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class LikeDsongsService {
+
   prisma = new PrismaClient()
 
-  
-  likedSong(LikeDsongDto: LikeDsongDto) {
-    return this.prisma.likedSong
+
+  async postLikedSong(LikeDsongDto: LikeDsongDto) {
+    // return this.prisma.likedSong.create(LikeDsongDto)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} likeDsong`;
+  async isSongLiked(userId: number, songId) {
+    const likedSong = await this
   }
 
 }

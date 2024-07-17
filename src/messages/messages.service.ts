@@ -9,7 +9,6 @@ export class MessagesService {
     return this.prisma.message.findMany()
   }
 
-
   async sendMessage(data: Prisma.MessageCreateInput): Promise<Message> {
     return this.prisma.message.create({ data })
   }
