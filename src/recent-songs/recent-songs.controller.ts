@@ -1,23 +1,36 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { RecentSongsService } from './recent-songs.service';
 import { CreateRecentSongDto } from './dto/create-recent-song.dto';
-import { UpdateRecentSongDto } from './dto/update-recent-song.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { Prisma, RecentSong } from '@prisma/client';
+
+import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { RecentSong } from '@prisma/client';
+
+class TypePostRecentSong {
+  @ApiProperty()
+  userId: number
+
+  @ApiProperty()
+  songId: number
+
+  @ApiProperty()
+  time: Date
+}
 
 @ApiTags('RECENT SONG')
 @Controller('api/recent-songs')
 export class RecentSongsController {
   constructor(private readonly recentSongsService: RecentSongsService) { }
 
-
-  // get recentSong via userId
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  // Get recentSong via userId
+  @Get(':userId')
+  findOne(@Param('userId') id: string) {
     return this.recentSongsService.findOne(+id);
   }
 
-  // post recentSong
+  // Post recentSong
+  @ApiBody({
+    type: TypePostRecentSong
+  })
   @Post()
   PostRecentSongs(@Body() recentSongData: CreateRecentSongDto): Promise<RecentSong> {
     return this.recentSongsService.PostRecentSongs(recentSongData);

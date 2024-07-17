@@ -39,7 +39,6 @@ export class SongService {
     });
   }
 
-
   // Edit song
   update(id: number, updateSongDto: UpdateSongDto) {
     return this.prisma.song.update({

@@ -2,7 +2,43 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { SongService } from './song.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+
+class TypeCreateSong {
+
+  @ApiProperty()
+  userId: number;
+
+  @ApiProperty()
+  viewer?: number;
+
+  @ApiProperty()
+  genreId: number;
+
+  @ApiProperty()
+  songName: string;
+
+  @ApiProperty()
+  duration?: number;
+
+  @ApiProperty()
+  popular: boolean;
+
+  @ApiProperty()
+  description?: string;
+
+  @ApiProperty()
+  songImage?: string;
+
+  @ApiProperty()
+  publicDate?: string | Date;
+
+  @ApiProperty()
+  filePath?: string;
+
+  @ApiProperty()
+  discussQuality?: number;
+}
 
 @ApiTags('SONG')
 @Controller('api/song')
@@ -22,12 +58,18 @@ export class SongController {
   }
 
   // Create new song
+  @ApiBody({
+    type: TypeCreateSong
+  })
   @Post()
   create(@Body() createSongDto: CreateSongDto) {
     return this.songService.create(createSongDto);
   }
 
   // Edit song
+  @ApiBody({
+    type: TypeCreateSong
+  })
   @Put(':id')
   update(@Param('id') id: string, @Body() updateSongDto: UpdateSongDto) {
     return this.songService.update(+id, updateSongDto);

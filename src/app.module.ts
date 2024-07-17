@@ -7,13 +7,15 @@ import { SongModule } from './song/song.module';
 import { GenreModule } from './genre/genre.module';
 import { MessagesModule } from './messages/messages.module';
 import { RecentSongsModule } from './recent-songs/recent-songs.module';
+import { LikeDsongsModule } from './like-dsongs/like-dsongs.module';
 
 @Module({
   imports: [UserModule, SongModule,
     ConfigModule.forRoot({ isGlobal: true }),
     GenreModule,
     MessagesModule,
-    RecentSongsModule],
+    RecentSongsModule,
+    LikeDsongsModule],
   controllers: [AppController],
   providers: [AppService],
 })

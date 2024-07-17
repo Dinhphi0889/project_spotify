@@ -13,7 +13,6 @@ export class RecentSongsService {
   PostRecentSongs(data: CreateRecentSongDto): Promise<RecentSong> {
     const { userId, songId, time } = data
     const formatTime = new Date(time.replace(" ", "T") + "Z")
-    console.log(formatTime)
     return this.prisma.recentSong.create({
       data: {
         userId,
