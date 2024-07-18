@@ -27,16 +27,25 @@ export class DiscussService {
     return this.prisma.discuss.findMany();
   }
 
-
+  //find one discuss
   findOne(id: number) {
-    return `This action returns a #${id} discuss`;
+    return this.prisma.discuss.findUnique({
+      where: { discussId: id },
+    });
   }
 
+  //update discuss
   update(id: number, updateDiscussDto: UpdateDiscussDto) {
-    return `This action updates a #${id} discuss`;
+    return this.prisma.discuss.update({
+      where: { discussId: id },
+      data: updateDiscussDto,
+    });;
   }
 
+  //delete discuss
   remove(id: number) {
-    return `This action removes a #${id} discuss`;
+    return this.prisma.discuss.delete({
+      where: { discussId: id },
+    });
   }
 }
