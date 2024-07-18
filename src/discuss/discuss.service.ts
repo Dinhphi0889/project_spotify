@@ -1,12 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDiscussDto } from './dto/create-discuss.dto';
 import { UpdateDiscussDto } from './dto/update-discuss.dto';
 import { PrismaClient } from '@prisma/client';
 
-
 @Injectable()
 export class DiscussService {
-  prisma = new PrismaClient()
+  prisma = new PrismaClient();
 
   // Post discuss
   async postDiscuss(createDiscussDto: CreateDiscussDto) {
@@ -18,7 +17,7 @@ export class DiscussService {
         content: createDiscussDto.content,
         discussDate: createDiscussDto.discussDate,
         replayDiscussId: createDiscussDto.replayDiscuss,
-      }
+      },
     });
   }
 
@@ -28,22 +27,38 @@ export class DiscussService {
   }
 
   //find one discuss
-  findOne(id: number) {
-    return this.prisma.discuss.findUnique({
+  async findOne(id: number) {
+    const discuss = await this.prisma.discuss.findUnique({
       where: { discussId: id },
     });
+    if (!discuss) {
+      throw new NotFoundException(`Discuss with ID ${id} not found`);
+    }
+    return discuss;
   }
 
   //update discuss
-  update(id: number, updateDiscussDto: UpdateDiscussDto) {
+  async update(id: number, updateDiscussDto: UpdateDiscussDto) {
+    const existingDiscuss = await this.prisma.discuss.findUnique({
+      where: { discussId: id },
+    });
+    if (!existingDiscuss) {
+      throw new NotFoundException(`Discuss with ID ${id} not found`);
+    }
     return this.prisma.discuss.update({
       where: { discussId: id },
       data: updateDiscussDto,
-    });;
+    });
   }
 
   //delete discuss
-  remove(id: number) {
+  async remove(id: number) {
+    const existingDiscuss = await this.prisma.discuss.findUnique({
+      where: { discussId: id },
+    });
+    if (!existingDiscuss) {
+      throw new NotFoundException(`Discuss with ID ${id} not found`);
+    }
     return this.prisma.discuss.delete({
       where: { discussId: id },
     });

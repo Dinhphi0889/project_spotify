@@ -3,17 +3,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClient, User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
-  constructor(private config: ConfigService) { }
-  prisma = new PrismaClient
+  constructor(private config: ConfigService) {}
+  prisma = new PrismaClient();
 
   // get all user
   async findAll() {
-
     return this.prisma.user.findMany();
-
   }
 
   // find user by id
@@ -36,8 +34,8 @@ export class UserService {
         role: updateUserDto.role,
         password: updateUserDto.password,
         nationality: updateUserDto.nationality,
-      }
-    })
+      },
+    });
   }
 
   // Delete user
@@ -50,19 +48,19 @@ export class UserService {
     const existingUser = await this.prisma.user.findFirst({
       where: {
         account,
-      }
-    })
-    return !!existingUser
+      },
+    });
+    return !!existingUser;
   }
 
   // register user
   async create(createUserDto: CreateUserDto) {
-    const isAccount = await this.checkDuplicateAccount(createUserDto.account)
+    const isAccount = await this.checkDuplicateAccount(createUserDto.account);
     if (isAccount) {
-      throw HttpStatus.BAD_REQUEST
+      throw HttpStatus.BAD_REQUEST;
     } else {
-      const salt = await bcrypt.genSalt()
-      const passwordHash = await bcrypt.hash(createUserDto.password, salt)
+      const salt = await bcrypt.genSalt();
+      const passwordHash = await bcrypt.hash(createUserDto.password, salt);
       return this.prisma.user.create({
         data: {
           account: createUserDto.account,
@@ -75,19 +73,19 @@ export class UserService {
           role: createUserDto.role,
           password: passwordHash,
           nationality: createUserDto.nationality,
-        }
-      })
+        },
+      });
     }
   }
 
-  // login 
+  // login
   async loginUser(account: string, password: string): Promise<User | null> {
     const user = await this.prisma.user.findFirst({
       where: {
         account,
         password,
-      }
-    })
-    return user
+      },
+    });
+    return user;
   }
 }
