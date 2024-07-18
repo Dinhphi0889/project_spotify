@@ -20,6 +20,7 @@ export class SongService {
   findAll() {
     return this.prisma.song.findMany();
   }
+  
   // Create new song
   async create(createSongDto: CreateSongDto) {
     return this.prisma.song.create({

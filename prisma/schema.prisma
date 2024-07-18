@@ -42,8 +42,8 @@ model Genre {
 
 model LikedSong {
   id          Int      @id @default(autoincrement())
-  idSongLiked Int?
   idUser      Int?
+  idSongLiked Int?      
   liked       Boolean?
   User        User?    @relation(fields: [idUser], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_1")
   Song        Song?    @relation(fields: [idSongLiked], references: [songId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_2")
@@ -85,16 +85,16 @@ model Playlist {
   playlistName   String?          @db.VarChar(255)
   likes          Int?
   songs          Int?
-  duration       DateTime?        @db.Time(0)
-  status         Boolean?
   discription    String?          @db.Text
   User           User?            @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Playlist_ibfk_1")
   Genre          Genre?           @relation(fields: [genreId], references: [genreId], onDelete: NoAction, onUpdate: NoAction, map: "Playlist_ibfk_2")
+  Song           Song?            @relation(fields: [songs], references: [songId], onDelete: NoAction, onUpdate: NoAction, map: "Playlist_ibfk_3")
   PlaylistLikes  PlaylistLikes[]
   RecentPlayList RecentPlayList[]
 
   @@index([genreId], map: "genreId")
   @@index([userId], map: "userId")
+  @@index([songs], map: "songs")
 }
 
 model PlaylistLikes {
@@ -147,6 +147,7 @@ model Song {
   discussQuality Int?
   Discuss        Discuss[]
   LikedSong      LikedSong[]
+  Playlist       Playlist[]
   RecentSong     RecentSong[]
   User           User?        @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Song_ibfk_1")
   Genre          Genre?       @relation(fields: [genreId], references: [genreId], onDelete: NoAction, onUpdate: NoAction, map: "Song_ibfk_2")

@@ -43,6 +43,4 @@ export class MessagesController {
     return this.messagesService.sendMessage(messageData)
   }
 
-  // @Get()
-  // async getMessageByRoom()
 }

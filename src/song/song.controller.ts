@@ -41,18 +41,18 @@ class TypeCreateSong {
 }
 
 @ApiTags('SONG')
-@Controller('api/song')
+@Controller('api/')
 export class SongController {
   constructor(private readonly songService: SongService) { }
 
   // Find all song
-  @Get()
+  @Get('/all-songs')
   findAll() {
     return this.songService.findAll();
   }
 
   // Find song by id
-  @Get(':id')
+  @Get('find-song/:id')
   findOne(@Param('id') id: string) {
     return this.songService.findOne(+id);
   }
@@ -61,7 +61,7 @@ export class SongController {
   @ApiBody({
     type: TypeCreateSong
   })
-  @Post()
+  @Post('/create-new-song')
   create(@Body() createSongDto: CreateSongDto) {
     return this.songService.create(createSongDto);
   }
@@ -70,13 +70,13 @@ export class SongController {
   @ApiBody({
     type: TypeCreateSong
   })
-  @Put(':id')
+  @Put('edit-song/:id')
   update(@Param('id') id: string, @Body() updateSongDto: UpdateSongDto) {
     return this.songService.update(+id, updateSongDto);
   }
 
   // Delete song
-  @Delete(':id')
+  @Delete('delete-song/:id')
   remove(@Param('id') id: string) {
     return this.songService.remove(+id);
   }

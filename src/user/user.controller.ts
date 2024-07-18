@@ -50,20 +50,20 @@ class TypeUserLogin {
   password: string
 }
 
-@Controller('/api/user')
+@Controller('/api')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   // find all user
   @ApiTags('USER')
-  @Get()
+  @Get('all-users')
   findAll() {
     return this.userService.findAll();
   }
 
   // find user by id
   @ApiTags('USER')
-  @Get(':id')
+  @Get('find-user/:id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
@@ -78,7 +78,7 @@ export class UserController {
       }
     })
   }))
-  @Post('/upload')
+  @Post('/upload-img')
   async upload(@UploadedFile() file: Express.Multer.File) {
     return file
   }
@@ -90,14 +90,14 @@ export class UserController {
     type: TypeUserDTO
   })
   @ApiTags('USER')
-  @Put(':id')
+  @Put('edit-user/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   // Delete user
   @ApiTags('USER')
-  @Delete(':id')
+  @Delete('edit-user/:id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }

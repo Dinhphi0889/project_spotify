@@ -7,7 +7,10 @@ import { SongModule } from './song/song.module';
 import { GenreModule } from './genre/genre.module';
 import { MessagesModule } from './messages/messages.module';
 import { RecentSongsModule } from './recent-songs/recent-songs.module';
-import { LikeDsongsModule } from './like-dsongs/like-dsongs.module';
+import { LikeDsongsModule } from './likedsongs/like-dsongs.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ResponseInterceptor } from './ResponseInterceptor';
+import { DiscussModule } from './discuss/discuss.module';
 
 @Module({
   imports: [UserModule, SongModule,
@@ -15,8 +18,15 @@ import { LikeDsongsModule } from './like-dsongs/like-dsongs.module';
     GenreModule,
     MessagesModule,
     RecentSongsModule,
-    LikeDsongsModule],
+    LikeDsongsModule,
+    DiscussModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor
+    }
+  ],
 })
 export class AppModule { }

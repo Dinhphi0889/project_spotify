@@ -11,7 +11,9 @@ export class UserService {
 
   // get all user
   async findAll() {
+
     return this.prisma.user.findMany();
+
   }
 
   // find user by id
