@@ -4,7 +4,7 @@ import { CreateRecentSongDto } from './dto/create-recent-song.dto';
 
 @Injectable()
 export class RecentSongsService {
-  prisma = new PrismaClient
+  prisma = new PrismaClient()
 
   findOne(id: number) {
     return this.prisma.recentSong.findMany({ where: { userId: id } });
