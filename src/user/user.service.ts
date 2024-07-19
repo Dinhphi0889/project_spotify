@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt'
 @Injectable()
 export class UserService {
   constructor(private config: ConfigService) { }
-  prisma = new PrismaClient
+  prisma = new PrismaClient()
 
   // get all user
   async findAll() {

@@ -1,4 +1,5 @@
-import { CallHandler, ExecutionContext, HttpCode, Injectable, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpCode, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,7 +11,9 @@ export class ResponseInterceptor implements NestInterceptor {
                 content: data,
                 message: context.switchToHttp().getResponse().statusCode <= 400 ? "SUCCESS" : "ERROR",
                 date: new Date(),
-                statusCode: context.switchToHttp().getResponse().statusCode,
+                statusCode: ExceptionsHandler
+                // statusCode: context.switchToHttp().getResponse().statusCode,
+                
             })),
         );
     }

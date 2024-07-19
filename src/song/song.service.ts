@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 export class SongService {
 
   constructor(private config: ConfigService) { }
-  prisma = new PrismaClient
+  prisma = new PrismaClient()
 
   // Find song by id
   findOne(id: number) {
