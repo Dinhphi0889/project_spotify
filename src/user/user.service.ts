@@ -1,9 +1,10 @@
-import { Get, HttpStatus, Injectable } from '@nestjs/common';
+import { Get, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClient, User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { NotFoundError } from 'rxjs';
 @Injectable()
 export class UserService {
   constructor(private config: ConfigService) { }
@@ -16,7 +17,10 @@ export class UserService {
 
   // find user by id
   async findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { userId: id } });
+    const findUser = await this.prisma.user.findUnique({ where: { userId: id } });
+    if(!findUser){
+      throw new NotFoundException(`Can't found UserID: ${id}`)
+    }
   }
 
   // Edit user

@@ -11,6 +11,8 @@ import { LikeDsongsModule } from './likedsongs/like-dsongs.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './ResponseInterceptor';
 import { DiscussModule } from './discuss/discuss.module';
+import { FollowingModule } from './following/following.module';
+import { PlayListModule } from './play-list/play-list.module';
 
 @Module({
   imports: [UserModule, SongModule,
@@ -19,7 +21,9 @@ import { DiscussModule } from './discuss/discuss.module';
     MessagesModule,
     RecentSongsModule,
     LikeDsongsModule,
-    DiscussModule],
+    DiscussModule,
+    FollowingModule,
+    PlayListModule],
   controllers: [AppController],
   providers: [
     AppService,

@@ -83,15 +83,13 @@ export class UserController {
     return file
   }
 
-
-
   // Edit user
   @ApiBody({
     type: TypeUserDTO
   })
   @ApiTags('USER')
   @Put('edit-user/:id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('userId') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 

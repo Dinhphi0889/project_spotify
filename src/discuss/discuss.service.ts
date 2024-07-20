@@ -51,7 +51,7 @@ export class DiscussService {
     });
   }
 
-  //delete discuss
+  // Delete discuss
   async remove(id: number) {
     const existingDiscuss = await this.prisma.discuss.findUnique({
       where: { discussId: id },

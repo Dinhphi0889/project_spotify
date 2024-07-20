@@ -4,7 +4,6 @@ import { CreateDiscussDto } from './dto/create-discuss.dto';
 import { UpdateDiscussDto } from './dto/update-discuss.dto';
 import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-
 class TypePostDiscuss {
   @ApiProperty()
   userId: number
@@ -41,18 +40,23 @@ export class DiscussController {
   }
 
 
-  @Get(':id')
+  // Find Discuss
+  @Get('find-discuss/:id')
   findOne(@Param('id') id: string) {
     return this.discussService.findOne(+id);
   }
 
   // Edit discuss
-  @Put(':id')
+  @ApiBody({
+    type: TypePostDiscuss
+  })
+  @Put('edit-discuss/:id')
   update(@Param('id') id: string, @Body() updateDiscussDto: UpdateDiscussDto) {
     return this.discussService.update(+id, updateDiscussDto);
   }
 
-  @Delete(':id')
+  // Delete Discuss
+  @Delete('delete-discuss/:id')
   remove(@Param('id') id: string) {
     return this.discussService.remove(+id);
   }

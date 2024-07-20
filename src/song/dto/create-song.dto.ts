@@ -14,8 +14,8 @@ export class CreateSongDto implements Prisma.SongCreateManyInput {
     @IsNumber()
     genreId: number;
 
-    @IsNumber()
-    duration?: number;
+    @IsString()
+    duration?: string;
 
     @IsBoolean()
     popular: boolean;

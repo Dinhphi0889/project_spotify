@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient, RecentSong } from '@prisma/client';
+import { PrismaClient, RecentSong } from '@prisma/client';
 import { CreateRecentSongDto } from './dto/create-recent-song.dto';
 
 @Injectable()
@@ -7,7 +7,12 @@ export class RecentSongsService {
   prisma = new PrismaClient()
 
   findOne(id: number) {
-    return this.prisma.recentSong.findMany({ where: { userId: id } });
+    return this.prisma.recentSong.findMany({
+      where: { userId: id },
+      include: {
+        Song: true,
+      }
+    });
   }
 
   PostRecentSongs(data: CreateRecentSongDto): Promise<RecentSong> {
