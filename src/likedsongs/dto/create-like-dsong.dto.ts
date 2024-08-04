@@ -2,7 +2,7 @@ import { IsNumber } from "class-validator";
 
 export class LikeDsongDto {
     @IsNumber()
-    idUser: number;
+    userId: number;
 
     @IsNumber()
     idSongLiked: number;

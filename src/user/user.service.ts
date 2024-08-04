@@ -5,9 +5,10 @@ import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { NotFoundError } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UserService {
-  constructor(private config: ConfigService) { }
+  constructor(private config: ConfigService, private readonly jwtService: JwtService) { }
   prisma = new PrismaClient()
 
   // get all user
@@ -18,7 +19,7 @@ export class UserService {
   // find user by id
   async findOne(id: number) {
     const findUser = await this.prisma.user.findUnique({ where: { userId: id } });
-    if(!findUser){
+    if (!findUser) {
       throw new NotFoundException(`Can't found UserID: ${id}`)
     }
   }
@@ -83,13 +84,26 @@ export class UserService {
   }
 
   // login
-  async loginUser(account: string, password: string): Promise<User | null> {
+  async loginUser(account: string, password: string): Promise<any> {
     const user = await this.prisma.user.findFirst({
       where: {
         account,
         password,
       },
     });
-    return user;
+    if (!user) {
+      return null
+    }
+    const payload = { username: user.account, id: user.userId, role: user.role }
+    const token = this.jwtService.sign(payload)
+    return {
+      user,
+      token
+    };
+  }
+
+  // Find user by account
+  async findUserByAccount(account: string): Promise<User> {
+    return this.prisma.user.findFirst({ where: { account } })
   }
 }

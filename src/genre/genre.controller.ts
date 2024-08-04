@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { GenreService } from './genre.service';
-import { CreateGenreDto } from './dto/create-genre.dto';
-import { UpdateGenreDto } from './dto/update-genre.dto';
-import { ApiTags } from '@nestjs/swagger';
-
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 @ApiTags('GENRE')
 @Controller('api/genre')
 export class GenreController {

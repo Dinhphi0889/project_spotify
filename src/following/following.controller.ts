@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { FollowingService } from './following.service';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
 
 class TypeFollow {
   @ApiProperty()
@@ -8,7 +9,12 @@ class TypeFollow {
   @ApiProperty()
   followingUserId: number
 }
-
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 @ApiTags('FOLLOWING')
 @Controller('api/')
 export class FollowingController {

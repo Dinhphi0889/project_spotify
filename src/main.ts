@@ -10,11 +10,13 @@ async function bootstrap() {
     origin: '*',
   });
 
-  const config = new DocumentBuilder().setTitle('Spotify').build();
+  const config = new DocumentBuilder()
+    .setTitle('Spotify')
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/swagger', app, document);
 
   app.use(express.static('.'));
-  await app.listen(8081);
+  await app.listen(8080);
 }
 bootstrap();

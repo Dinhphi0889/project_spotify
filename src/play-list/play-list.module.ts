@@ -5,5 +5,6 @@ import { PlayListController } from './play-list.controller';
 @Module({
   controllers: [PlayListController],
   providers: [PlayListService],
+  imports: [],
 })
 export class PlayListModule {}

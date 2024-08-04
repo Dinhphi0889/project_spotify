@@ -16,7 +16,7 @@ export class LikeDsongsService {
     return this.prisma.likedSong.create({
       data: {
         idSongLiked: songId,
-        idUser: userId,
+        userId: userId,
         liked: true
       }
     })
@@ -26,7 +26,7 @@ export class LikeDsongsService {
   async unlikeSong(songId: number, userId: number) {
     return this.prisma.likedSong.deleteMany({
       where: {
-        idUser: userId,
+        userId: userId,
         idSongLiked: songId,
       }
     })
@@ -35,7 +35,7 @@ export class LikeDsongsService {
   async getSongLiked(userId: number, songId) {
     return this.prisma.likedSong.findFirst({
       where: {
-        idUser: userId,
+        userId: userId,
         idSongLiked: songId,
       },
       include: {

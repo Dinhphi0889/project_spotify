@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query, UseGuards } from '@nestjs/common';
 import { MessagesService } from './messages.service';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { Message, Prisma } from '@prisma/client';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
+import { CheckTokenUser } from 'src/Guards/tokenUser.guard';
 
 class TypeSendMessage {
   @ApiProperty()
@@ -16,7 +18,12 @@ class TypeSendMessage {
   @ApiProperty()
   roomChat: string
 }
-
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 @ApiTags('MESSAGES')
 @Controller('api/messages')
 export class MessagesController {
@@ -35,6 +42,12 @@ export class MessagesController {
   }
 
   // send message
+  @ApiHeader({
+    name: 'Token-User',
+    description: 'Input token user',
+    required: true
+  })
+  @UseGuards(CheckTokenUser)
   @ApiBody({
     type: TypeSendMessage
   })

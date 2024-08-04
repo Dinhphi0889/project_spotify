@@ -42,35 +42,34 @@ model Genre {
 model LikedSong {
   id          Int      @id @default(autoincrement())
   idSongLiked Int?
-  idUser      Int?
+  userId      Int?
   liked       Boolean?
-  User        User?    @relation(fields: [idUser], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_1")
+  User        User?    @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_1")
   Song        Song?    @relation(fields: [idSongLiked], references: [songId], onDelete: NoAction, onUpdate: NoAction, map: "LikedSong_ibfk_2")
 
-  @@index([idUser], map: "idUser")
+  @@index([userId], map: "idUser")
   @@index([idSongLiked], map: "idSongLiked")
 }
 
 model ListFriends {
-  id        Int      @id @default(autoincrement())
-  idMess    Int?
-  idUser    Int?
-  isFriends Boolean?
-  Message   Message? @relation(fields: [idMess], references: [idMess], onDelete: NoAction, onUpdate: NoAction, map: "ListFriends_ibfk_1")
-  User      User?    @relation(fields: [idUser], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "ListFriends_ibfk_2")
+  id                              Int     @id @default(autoincrement())
+  userId                          Int?
+  friendId                        Int?
+  roomChat                        String? @db.VarChar(50)
+  User                            User?   @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "ListFriends_ibfk_2")
+  User_ListFriends_friendIdToUser User?   @relation("ListFriends_friendIdToUser", fields: [friendId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "ListFriends_ibfk_3")
 
-  @@index([idMess], map: "idMess")
-  @@index([idUser], map: "idUser")
+  @@index([userId], map: "idUser")
+  @@index([friendId], map: "friendId")
 }
 
 model Message {
-  idMess      Int           @id @default(autoincrement())
+  idMess      Int       @id @default(autoincrement())
   idSender    Int?
-  contentMess String?       @db.Text
-  timeSend    DateTime?     @db.DateTime(0)
-  roomChat    String?       @db.VarChar(100)
-  ListFriends ListFriends[]
-  User        User?         @relation(fields: [idSender], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Message_ibfk_2")
+  contentMess String?   @db.Text
+  timeSend    DateTime? @db.DateTime(0)
+  roomChat    String?   @db.VarChar(100)
+  User        User?     @relation(fields: [idSender], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Message_ibfk_2")
 
   @@index([idSender], map: "idUser")
 }
@@ -128,6 +127,7 @@ model User {
   Following_Following_followingUserIdToUser Following[]   @relation("Following_followingUserIdToUser")
   LikedSong                                 LikedSong[]
   ListFriends                               ListFriends[]
+  ListFriends_ListFriends_friendIdToUser    ListFriends[] @relation("ListFriends_friendIdToUser")
   Message                                   Message[]
   Playlists                                 Playlists[]
   RecentSong                                RecentSong[]

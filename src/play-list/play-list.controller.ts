@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe, NotFoundException, Query, UseGuards } from '@nestjs/common';
 import { PlayListService } from './play-list.service';
 import { AddSongsToPlaylistDto, CreatePlayListDto } from './dto/create-play-list.dto';
 import { UpdatePlayListDto } from './dto/update-play-list.dto';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
 
 class TypeAddNewPlaylist {
   @ApiProperty()
@@ -22,7 +23,12 @@ class TypeAddNewPlaylist {
   @ApiProperty()
   playlistId: number
 }
-
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 class TypeEditPlayList {
   @ApiProperty()
   playlistName: string
@@ -50,6 +56,24 @@ export class PlayListController {
     return this.playListService.findAll();
   }
 
+  // Get all playlistSong
+  @Get('/get-all-playlistSong')
+  getAllPlaylistSong() {
+    return this.playListService.getAllPlaylistSong();
+  }
+
+  // Get playlist of user
+  @Get('/get-playlist-of-user')
+  getPlaylistOfUser(@Query('id', ParseIntPipe) id: number) {
+    return this.playListService.getPlaylistOfUser(id)
+  }
+
+  // Get song in playlist
+  @Get('/get-song-in-playlist/:playlistId')
+  getSongInPlaylist(@Query('playlistId', ParseIntPipe) id: number) {
+    return this.playListService.getSongInPlaylist(id)
+  }
+
   // Add song to playlist
   @ApiBody({
     type: TypeAddNewPlaylist
@@ -57,17 +81,6 @@ export class PlayListController {
   @Post('add-song-to-playlist')
   async addSongToPlaylist(@Body() addSongToPlaylist: AddSongsToPlaylistDto) {
     return this.playListService.addSongToPlaylist(addSongToPlaylist);
-  }
-  
-  // Find song in playlist
-  @Get(':id/song')
-  async getSongInPlaylist(@Param('id', ParseIntPipe) id: number) {
-    const songs = await this.playListService.getSongInPlaylist(id)
-    if (!songs) {
-      throw new NotFoundException(`Playlist with ID ${id} not found`);
-    }
-    return songs
-
   }
 
   // Edit Playlist

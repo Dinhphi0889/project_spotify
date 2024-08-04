@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { SongService } from './song.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
 
 class TypeCreateSong {
 
@@ -39,6 +40,12 @@ class TypeCreateSong {
   @ApiProperty()
   discussQuality?: number;
 }
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 
 @ApiTags('SONG')
 @Controller('api/')
@@ -48,6 +55,7 @@ export class SongController {
   // Find all song
   @Get('/all-songs')
   findAll() {
+    
     return this.songService.findAll();
   }
 

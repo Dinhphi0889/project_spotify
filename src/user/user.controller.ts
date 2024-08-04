@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Put, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Put, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
+import { Role } from 'src/Types/role.enum';
 
 class TypeUserDTO {
   @ApiProperty()
@@ -29,13 +31,10 @@ class TypeUserDTO {
   desciption: string;
 
   @ApiProperty()
-  refreshToken: string;
-
-  @ApiProperty()
   banner: string;
 
   @ApiProperty()
-  role: string;
+  role: Role[];
 
   @ApiProperty()
   password: string;
@@ -49,7 +48,12 @@ class TypeUserLogin {
   @ApiProperty()
   password: string
 }
-
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 @Controller('/api')
 export class UserController {
   constructor(private readonly userService: UserService) { }

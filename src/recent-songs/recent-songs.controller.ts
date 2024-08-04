@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { RecentSongsService } from './recent-songs.service';
 import { CreateRecentSongDto } from './dto/create-recent-song.dto';
 
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { RecentSong } from '@prisma/client';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
 
 class TypePostRecentSong {
   @ApiProperty()
@@ -15,7 +16,12 @@ class TypePostRecentSong {
   @ApiProperty()
   time: Date
 }
-
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 @ApiTags('RECENT SONG')
 @Controller('api/recent-songs')
 export class RecentSongsController {

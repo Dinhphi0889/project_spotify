@@ -28,8 +28,8 @@ export class DiscussService {
 
   //find one discuss
   async findOne(id: number) {
-    const discuss = await this.prisma.discuss.findUnique({
-      where: { discussId: id },
+    const discuss = await this.prisma.discuss.findMany({
+      where: { songId: id },
     });
     if (!discuss) {
       throw new NotFoundException(`Discuss with ID ${id} not found`);

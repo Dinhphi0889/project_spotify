@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { LikeDsongsService } from './like-dsongs.service';
 import { LikeDsongDto } from './dto/create-like-dsong.dto';
-import { ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { CybersoftTokenGuard } from 'src/strategy/tokenCyberSoft.strategy';
 
 class TypePostLike {
   @ApiProperty()
-  idUser: number
+  userId: number
 
   @ApiProperty()
   idSongLiked: number
@@ -16,12 +17,17 @@ class TypePostLike {
 
 class TypePostUnLike {
   @ApiProperty()
-  idUser: number
+  userId: number
 
   @ApiProperty()
   idSongLiked: number
 }
-
+@ApiHeader({
+  name: 'tokenCyberSoft',
+  description: 'Nhập token cybersoft',
+  required: true
+})
+@UseGuards(CybersoftTokenGuard)
 @ApiTags('LIKED SONG')
 @Controller('api/')
 export class LikeDsongsController {
@@ -33,7 +39,7 @@ export class LikeDsongsController {
   })
   @Post('/liked')
   postLikedSong(@Body() likedSongDto: LikeDsongDto) {
-    return this.likeDsongsService.postLikedSong(likedSongDto.idSongLiked, likedSongDto.idUser);
+    return this.likeDsongsService.postLikedSong(likedSongDto.idSongLiked, likedSongDto.userId);
   }
 
   // Unlike
@@ -42,7 +48,7 @@ export class LikeDsongsController {
   })
   @Delete('/unlike')
   unlikeSong(@Body() LikeDsongDto: LikeDsongDto) {
-    return this.likeDsongsService.unlikeSong(LikeDsongDto.idSongLiked, LikeDsongDto.idUser)
+    return this.likeDsongsService.unlikeSong(LikeDsongDto.idSongLiked, LikeDsongDto.userId)
   }
 
   // Get song liked

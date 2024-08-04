@@ -13,8 +13,8 @@ export class MessagesService {
     return this.prisma.message.create({ data })
   }
 
-  async getMessageByRoom(roomId: string): Promise<Message[]> {
-    return this.prisma.message.findMany({ where: { roomChat: roomId } })
+  async getMessageByRoom(roomChat: string): Promise<Message[]> {
+    return this.prisma.message.findMany({ where: { roomChat } })
   }
 
 

@@ -14,10 +14,8 @@ export class PlayListService {
         userId: createPlayListDto.userId,
         imagePath: createPlayListDto.imagePath,
         playlistName: createPlayListDto.playlistName,
-        // songId: createPlayListDto.songsId,
         description: createPlayListDto.description,
         createDate: createPlayListDto.createDate,
-        playlistId: createPlayListDto.playlistId
       }
     });
   }
@@ -39,24 +37,29 @@ export class PlayListService {
     });
   }
 
+  // Get all playlist
+  findAll() {
+    return this.prisma.playlists.findMany()
+  }
 
-  // Find song in playlist
-  async getSongInPlaylist(playlistId: number) {
-    const playlistSongs = await this.prisma.playlistSongs.findMany({
-      where: { playlistId },
+  // get all song in playlist
+  getAllPlaylistSong() {
+    return this.prisma.playlistSongs.findMany()
+  }
+
+  // get playlist of user
+  async getPlaylistOfUser(id: number) {
+    return await this.prisma.playlists.findMany({ where: { userId: id } })
+  }
+
+  // get song in playlist
+  async getSongInPlaylist(id: number) {
+    return await this.prisma.playlistSongs.findMany({
+      where: { songId: id },
       include: {
         Song: true
       }
     })
-    if (!playlistSongs) {
-      throw new NotFoundException(`Playlist with ID ${playlistId} not found`);
-    }
-    return playlistSongs.map((playlistSong) => playlistSong);
-  }
-
-  // Get all playlist
-  findAll() {
-    return this.prisma.playlistSongs.findMany({ include: { Song: true } })
   }
 
   // Edit Playlist
